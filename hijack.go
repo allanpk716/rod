@@ -246,6 +246,12 @@ func (h *Hijack) LoadResponse(client *http.Client, loadBody bool) error {
 			return err
 		}
 		h.Response.payload.Body = buf.Bytes()
+	} else {
+		var buf bytes.Buffer
+		_, err := io.Copy(&buf, res.Body)
+		if err != nil {
+			return err
+		}
 	}
 
 	return nil
