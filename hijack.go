@@ -3,6 +3,7 @@ package rod
 import (
 	"bytes"
 	"context"
+	"io"
 	"io/ioutil"
 	"net/http"
 	"net/url"
@@ -239,11 +240,12 @@ func (h *Hijack) LoadResponse(client *http.Client, loadBody bool) error {
 	}
 
 	if loadBody {
-		b, err := ioutil.ReadAll(res.Body)
+		var buf bytes.Buffer
+		_, err := io.Copy(&buf, res.Body)
 		if err != nil {
 			return err
 		}
-		h.Response.payload.Body = b
+		h.Response.payload.Body = buf.Bytes()
 	}
 
 	return nil
